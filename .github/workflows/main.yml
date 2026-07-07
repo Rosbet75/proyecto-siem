@@ -6,6 +6,7 @@ on:
     paths:
     - 'terraform/provider.tf'
     - 'terraform/test.tf'
+    - '.github/workflows/main.yml'
 jobs:
   construirServidorTerraform:
     runs-on: ubuntu-latest
