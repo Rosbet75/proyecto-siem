@@ -6,3 +6,5 @@ resource "aws_instance" "servidor_juice_shop" {
     Name = "DevSecOps-JuiceShop-Server"
   }
 }
+
+#test
