@@ -12,28 +12,59 @@ permissions:
 jobs:
   scanPipeline:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [terraform, kubernetes, ansible, docker]
+        node-version: []
     steps:
       - name: checkout de codigo
         uses: actions/checkout@v4
       
-      - name: run checkov (IaC scan)
+      - name: checkov (escaneo terraform)
+        if: matrix.component == 'terraform'
         uses: bridgecrewio/checkov-action@master
         with:
           framework: terraform
+          directory: ./terraform
           output_format: sarif
           output_file_path: results_checkov.sarif
           soft_fail: true
       - name: Upload Checkov SARIF results
+        if: matrix.component == 'terraform' && always()
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
         with:
           sarif_file: results_checkov.sarif
           category: checkov
-      # - name: trufflehog oss
-      #   uses: trufflesecurity/trufflehog-main-action@main
-      #   with:
-      #     path: ./
-      #     base: ${{ github.event.repository.default_branch }}
+      - name: Checkov (escaneo docker)
+        if: matrix.component == 'docker'
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: terraform
+          directory: ./terraform
+          output_format: sarif
+          output_file_path: results_checkov.sarif
+          soft_fail: true
+      - name: subir sarif de docker
+        if:  matrix.component == 'docker' && always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results_checkov.sarif
+          category: checkov
+      - name: checkov (escaneo kubernetes)
+        if: matrix.component == 'kubernetes'
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: kubernetes
+          directory: ./kubernetes
+          output_format: sarif
+          output_file_path: results_checkov.sarif
+          soft_fail: true
+      - name: subir sarif de kubernetes
+        if:  matrix.component == 'kubernetes' && always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results_checkov.sarif
+          category: checkov
       - name: Gitleaks Scan
         uses: gitleaks/gitleaks-action@v2
         env:

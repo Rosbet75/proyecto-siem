@@ -1,0 +1,12 @@
+name: "AWS Infrastructure & Deploy"
+
+on:
+  push:
+    branches: [ "main" ]
+  
+  repository_dispatch:
+    types: [ deploy-new-app-version ]
+
+jobs:
+  devsecops-pipeline:
+    runs-on: ubuntu-latest

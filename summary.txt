@@ -1,0 +1,5 @@
+cosas que hace el proyecto:
+privisionamiento de infraestructura bootstrap (servidor inicial desde el que lanzamos/gestionamos el resto)
+ - usamos terraform en un maquina efimera
+ 
+escaneo de codigo IaC con integracion a github code scanning con codigo de sarif (usnado checkov y gitleaks)
